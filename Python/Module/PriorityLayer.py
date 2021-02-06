@@ -34,7 +34,7 @@ class PriorityLayer(object):
         layerDatas = self.searchLayerDataByName(name)
         return layerDatas["Objects"]
 
-    def getAllDatas(self):
+    def getAllObjects(self):
         return [ dic["Objects"] for dic in self.layerDatas ]
 
     def changeLayer(self, fromLayerName, toLayerName, obj):
