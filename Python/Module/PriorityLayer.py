@@ -30,7 +30,7 @@ class PriorityLayer(object):
         if len(layer) != 0:
             layer["Objects"].remove(obj)
 
-    def geObjects(self, name):
+    def getObjects(self, name):
         layerDatas = self.searchLayerDataByName(name)
         return layerDatas["Objects"]
 
