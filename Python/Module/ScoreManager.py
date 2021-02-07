@@ -12,7 +12,7 @@ class ExtendManager(object):
         self.every = 0
         self.nextExtendScore = 0
 
-    def init(self, extendTable, every=None):
+    def init(self, extendTable, every=0):
         self.extendTable = extendTable
         self.every = every
         self.reset()
