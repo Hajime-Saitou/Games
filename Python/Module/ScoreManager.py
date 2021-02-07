@@ -9,10 +9,10 @@ class ExtendManager(object):
     def __init__(self):
         self.extendTable = None
         self.extendTableIndex = 0
-        self.every = False
+        self.every = 0
         self.nextExtendScore = 0
 
-    def init(self, extendTable, every=False):
+    def init(self, extendTable, every=None):
         self.extendTable = extendTable
         self.every = every
         self.reset()
@@ -20,7 +20,7 @@ class ExtendManager(object):
     def clear(self):
         self.extendTable = None
         self.extendTableIndex = 0
-        self.every = False
+        self.every = 0
         self.nextExtendScore = 0
 
     def reset(self):
@@ -28,18 +28,13 @@ class ExtendManager(object):
         self.nextExtendScore = self.extendTable[0]
 
     def isExtend(self, score):
-        if self.extendTableIndex == len(self.extendTable):
-            return False
-
         if score < self.nextExtendScore:
             return False
 
         self.extendTableIndex += 1
-        if self.extendTableIndex == len(self.extendTable):
-            if self.every:
-                self.extendTableIndex = min(self.extendTableIndex, len(self.extendTable) - 1)
-                self.nextExtendScore += self.extendTable[self.extendTableIndex]
-        else:
+        if self.extendTableIndex < len(self.extendTable):
             self.nextExtendScore = self.extendTable[self.extendTableIndex]
-
+        else:
+            if self.every > 0:
+                self.nextExtendScore += self.every
         return True
