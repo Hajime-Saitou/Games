@@ -28,8 +28,6 @@ class ExtendManager(object):
         self.nextExtendScore = self.extendTable[0]
 
     def isExtend(self, score):
-        print("next: " + str(self.nextExtendScore))
-
         if self.extendTableIndex == len(self.extendTable):
             return False
 
@@ -37,7 +35,6 @@ class ExtendManager(object):
             return False
 
         self.extendTableIndex += 1
-        print("index: " + str(self.extendTableIndex))
         if self.extendTableIndex == len(self.extendTable):
             if self.every:
                 self.extendTableIndex = min(self.extendTableIndex, len(self.extendTable) - 1)
