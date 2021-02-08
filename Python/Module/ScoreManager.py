@@ -78,3 +78,22 @@ class HighScoreRankingManager(object):
         if len(self.highScoreRecords) < self.maxRecordCount:
             return True
         return score >= self.highScoreRecords[-1]["Score"]
+
+    def getPrivisionalRanks(self, records):
+        provisionalRanks = [ None ] * len(records)
+        provisionalRecords = sorted(self.highScoreRecords + records, key=lambda k: k["Score"], reverse=True)[:self.maxRecordCount]
+        print(provisionalRecords)
+        for index, record in enumerate(records):
+            provisionalRanks[index] = provisionalRecords.index(record) if record in provisionalRecords else -1
+
+        return provisionalRanks
+
+hs = HighScoreRankingManager(["Score"], 5)
+hs.append({"Score": 1000})
+hs.append({"Score": 2000})
+hs.append({"Score": 3000})
+hs.append({"Score": 4000})
+hs.append({"Score": 5000})
+hs.sortDesendingByScore()
+
+print(hs.getPrivisionalRanks([ {"Score": 500}, {"Score": 1001}, {"Score": 1002}, {"Score": 100}, {"Score": 50000},  ]))
