@@ -87,13 +87,3 @@ class HighScoreRankingManager(object):
             provisionalRanks[index] = provisionalRecords.index(record) if record in provisionalRecords else -1
 
         return provisionalRanks
-
-hs = HighScoreRankingManager(["Score"], 5)
-hs.append({"Score": 1000})
-hs.append({"Score": 2000})
-hs.append({"Score": 3000})
-hs.append({"Score": 4000})
-hs.append({"Score": 5000})
-hs.sortDesendingByScore()
-
-print(hs.getPrivisionalRanks([ {"Score": 500}, {"Score": 1001}, {"Score": 1002}, {"Score": 100}, {"Score": 50000},  ]))
