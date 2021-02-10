@@ -82,7 +82,6 @@ class HighScoreRankingManager(object):
     def getPrivisionalRanks(self, records):
         provisionalRanks = [ None ] * len(records)
         provisionalRecords = sorted(self.highScoreRecords + records, key=lambda k: k["Score"], reverse=True)[:self.maxRecordCount]
-        print(provisionalRecords)
         for index, record in enumerate(records):
             provisionalRanks[index] = provisionalRecords.index(record) if record in provisionalRecords else -1
 
