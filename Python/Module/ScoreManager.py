@@ -74,6 +74,12 @@ class HighScoreRankingManager(object):
     def isExceedTopScore(self, score):
         return score >= self.highScoreRecords[0]["Score"]
 
+    def isTopScore(self, score):
+        return score >= self.getTopScore()
+
+    def getTopScore(self):
+        return self.highScoreRecords[0]["Score"]
+
     def isRankIn(self, score):
         if len(self.highScoreRecords) < self.maxRecordCount:
             return True
