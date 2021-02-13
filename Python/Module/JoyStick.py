@@ -86,3 +86,71 @@ class JoyKey(JoyStickBase):
 				self.data |= 1 << i
 
 		super().update()
+
+class JoyStick(JoyStickBase):
+	def __init__(self, joyStickId=0):
+		super().__init__()
+
+		if joyStickId >= pygame.joystick.get_count():
+			raise ValueError("Invalid JoyStick ID {}".format(joyStickId))
+
+		self.joyStick = pygame.joystick.Joystick(joyStickId)
+		self.joyStick.init()
+
+		self.hasHat = True if self.joyStick.get_numhats() > 0 else False
+
+	def update(self):
+		self.data = JOY_NOINPUT
+
+		stickDatas = []
+		if self.hasHat:
+			for i in range(self.joyStick.get_numhats()):
+				x, y = self.joyStick.get_hat(i)
+				stickDatas.extend([ x, -y ])
+		else:
+			for i in range(self.joyStick.get_numaxes()):
+				stickDatas.append(self.joyStick.get_axis(i))
+
+		if stickDatas[1] < -0.5:
+			self.data |= JOY_UP
+		if stickDatas[1] > 0.5:
+			self.data |= JOY_DOWN
+
+		if stickDatas[0] > 0.5:
+			self.data |= JOY_RIGHT
+		if stickDatas[0] < -0.5:
+			self.data |= JOY_LEFT
+
+		for i in range(self.joyStick.get_numbuttons()):
+			if self.joyStick.get_button(i) == True:
+				self.data |= 1 << i
+
+		super().update()
+
+class JoyStickIntegrator(JoyStickBase):
+	def __init__(self):
+		super().__init__()
+
+		self.joySticks = []
+
+	def append(self, joyStick):
+		self.joySticks.append(joyStick)
+
+	def remove(self, joyStick):
+		self.joySticks.remove(joyStick)
+
+	def update(self):
+		self.data = JOY_NOINPUT
+		self.repeatedData = JOY_NOINPUT
+		self.xorData = JOY_NOINPUT
+		self.latestButtonDown = JOY_NOINPUT
+		self.latestButtonUp = JOY_NOINPUT
+
+		for joyStick in self.joySticks:
+			joyStick.update()
+		
+			self.data |= joyStick.data
+			self.repeatedData |= joyStick.repeatedData
+			self.xorData |= joyStick.xorData
+			self.latestButtonDown |= joyStick.latestButtonDown
+			self.latestButtonUp |= joyStick.latestButtonUp
