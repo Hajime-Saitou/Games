@@ -4,15 +4,16 @@
 #
 # Released under the MIT license.
 # see https://opensource.org/licenses/MIT
+import math
 
 class ExtendManager(object):
     def __init__(self):
         self.extendTable = None
         self.extendTableIndex = 0
-        self.every = 0
+        self.every = None
         self.nextExtendScore = 0
 
-    def init(self, extendTable, every=0):
+    def init(self, extendTable, every=None):
         self.extendTable = extendTable
         self.every = every
         self.reset()
@@ -20,23 +21,30 @@ class ExtendManager(object):
     def clear(self):
         self.extendTable = None
         self.extendTableIndex = 0
-        self.every = 0
+        self.every = None
         self.nextExtendScore = 0
 
     def reset(self):
         self.extendTableIndex = 0
-        self.nextExtendScore = self.extendTable[0]
+        self.nextExtendScore = self.extendTable[0] if self.extendTable != None else 0
 
     def isExtend(self, score):
+        if self.extendTable == None:
+            return False
+
         if score < self.nextExtendScore:
             return False
 
         self.extendTableIndex += 1
         if self.extendTableIndex < len(self.extendTable):
             self.nextExtendScore = self.extendTable[self.extendTableIndex]
+            return True
+
+        if self.every != None:
+            self.nextExtendScore += self.every
         else:
-            if self.every > 0:
-                self.nextExtendScore += self.every
+            self.nextExtendScore = math.inf
+
         return True
 
 class HighScoreRankingManager(object):
