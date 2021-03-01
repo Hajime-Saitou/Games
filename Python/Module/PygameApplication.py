@@ -40,7 +40,7 @@ class PygameApplication(object):
     def toggleFullScreen(self):
         self.displayFlags ^= pygame.FULLSCREEN
         self.surface = pygame.display.set_mode(self.surfaceSize, flags=self.displayFlags)
-        self.isFullScreen != self.isFullScreen
+        self.isFullScreen = not self.isFullScreen
 
         return self.isFullScreen
 
