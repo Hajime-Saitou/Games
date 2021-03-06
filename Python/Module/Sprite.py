@@ -7,6 +7,12 @@
 import pygame
 import math
 import numpy as np
+from enum import IntFlag, auto
+
+class SpriteFlip(IntFlag):
+    default = 0
+    horizontal = auto()
+    vertical = auto()
 
 class SpriteBase(object):
     def __init__(self):
@@ -16,17 +22,22 @@ class SpriteBase(object):
         pass
 
 class Sprite(SpriteBase):
-    def __init__(self, image, left, top, width, height):
+    def __init__(self, image, left, top, width, height, flipFlag=SpriteFlip.default):
         self.width = width
         self.height = height
         self.rect = pygame.Rect(left, top, width, height)
         self.image = image.subsurface(self.rect)
+        self.flipFlag = flipFlag
 
-    def draw(self, surface, x, y, angle=0, scale=1.0):
+    def draw(self, surface, x, y, angle=0, scale=1.0, flipFlag=SpriteFlip.default):
         if angle == 0 and scale == 1.0:
             render_image = self.image
         else:
             render_image = pygame.transform.rotozoom(self.image, angle, scale)
+
+        flipFlag ^= self.flipFlag
+        if flipFlag != SpriteFlip.default:
+            render_image = pygame.transform.flip(render_image, flipFlag & SpriteFlip.horizontal, flipFlag & SpriteFlip.vertical)
 
         surface.blit(render_image, [ int(x - render_image.get_width() // 2), int(y - render_image.get_height() // 2) ])
 
@@ -37,7 +48,7 @@ class LinkedSprite(SpriteBase):
     def append(self, sprite, x, y):
         self.sprites.append(( sprite, x, y ))
 
-    def draw(self, surface, x, y, angle=0, scale=1.0):
+    def draw(self, surface, x, y, angle=0, scale=1.0, flipFlag=SpriteFlip.default):
         for sprite, sx, sy in self.sprites:
             cos = math.cos(math.radians(-angle))
             sin = math.sin(math.radians(-angle))
@@ -45,7 +56,7 @@ class LinkedSprite(SpriteBase):
             point = np.matrix( [ [ sx * scale ], [ sy * scale ] ])
             rotatedPoint = rotate * point
 
-            sprite.draw(surface, int(rotatedPoint[0] + x), int(rotatedPoint[1] + y), angle, scale) 
+            sprite.draw(surface, int(rotatedPoint[0] + x), int(rotatedPoint[1] + y), angle, scale, flipFlag)
 
 class AnimationSprite(SpriteBase):
     def __init__(self):
@@ -100,7 +111,7 @@ class AnimationSprite(SpriteBase):
         self.animeIndex = 0
         self.currentanimeFrameCounter = 0
 
-    def draw(self, surface, x, y, angle=0, scale=1.0):
+    def draw(self, surface, x, y, angle=0, scale=1.0, flipFlag=SpriteFlip.default):
         sprite, _ = self.sprites[self.animeIndex]
         if sprite is not None:
-            sprite.draw(surface, x, y, angle, scale)
+            sprite.draw(surface, x, y, angle, scale, flipFlag)
