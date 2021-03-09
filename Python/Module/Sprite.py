@@ -30,14 +30,14 @@ class Sprite(SpriteBase):
         self.flipFlag = flipFlag
 
     def draw(self, surface, x, y, angle=0, scale=1.0, flipFlag=SpriteFlip.default):
-        if angle == 0 and scale == 1.0:
-            render_image = self.image
-        else:
-            render_image = pygame.transform.rotozoom(self.image, angle, scale)
-
         flipFlag ^= self.flipFlag
         if flipFlag != SpriteFlip.default:
-            render_image = pygame.transform.flip(render_image, flipFlag & SpriteFlip.horizontal, flipFlag & SpriteFlip.vertical)
+            render_image = pygame.transform.flip(self.image, flipFlag & SpriteFlip.horizontal, flipFlag & SpriteFlip.vertical)
+        else:
+            render_image = self.image
+
+        if angle != 0 or scale != 1.0:
+            render_image = pygame.transform.rotozoom(render_image, angle, scale)
 
         surface.blit(render_image, [ int(x - render_image.get_width() // 2), int(y - render_image.get_height() // 2) ])
 
