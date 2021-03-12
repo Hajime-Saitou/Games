@@ -80,9 +80,6 @@ class HighScoreRankingManager(object):
         return -1
 
     def isExceedTopScore(self, score):
-        return score >= self.highScoreRecords[0]["Score"]
-
-    def isTopScore(self, score):
         return score >= self.getTopScore()
 
     def getTopScore(self):
